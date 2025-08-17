@@ -22,6 +22,50 @@ def analyze(req: AnalyzeRequest):
 def shutdown_event():
     EnginePool.close()
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 def root():
-    return {"message": "Chess Analysis API is running. Visit /docs for interactive UI."}
+    return """
+    <html>
+      <head>
+        <title>Chess Analysis</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 40px; }
+          textarea { width: 100%; height: 200px; font-family: monospace; }
+          button { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
+          pre { background: #f4f4f4; padding: 10px; white-space: pre-wrap; }
+        </style>
+      </head>
+      <body>
+        <h1>Chess Analysis</h1>
+        <p>Paste a PGN and click Analyze:</p>
+        <textarea id="pgn"></textarea><br>
+        <button onclick="analyze()">Analyze</button>
+        <h2>Results</h2>
+        <pre id="result"></pre>
+
+        <script>
+          async function analyze() {
+            const pgn = document.getElementById("pgn").value;
+            if (!pgn.trim()) {
+              alert("Please paste a PGN first!");
+              return;
+            }
+            document.getElementById("result").textContent = "Analyzing...";
+            try {
+              const res = await fetch("/analyze", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ pgn: pgn, depth: 12, multipv: 2 })
+              });
+              const data = await res.json();
+              document.getElementById("result").textContent =
+                JSON.stringify(data, null, 2);
+            } catch (err) {
+              document.getElementById("result").textContent =
+                "Error: " + err;
+            }
+          }
+        </script>
+      </body>
+    </html>
+    """
