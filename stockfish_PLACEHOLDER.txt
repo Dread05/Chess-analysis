@@ -1,0 +1,2 @@
+Download Stockfish (Linux binary) from https://stockfishchess.org/download/ 
+Place the binary here and rename it to 'stockfish'.
