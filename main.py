@@ -21,3 +21,7 @@ def analyze(req: AnalyzeRequest):
 @app.on_event("shutdown")
 def shutdown_event():
     EnginePool.close()
+
+@app.get("/")
+def root():
+    return {"message": "Chess Analysis API is running. Visit /docs for interactive UI."}
