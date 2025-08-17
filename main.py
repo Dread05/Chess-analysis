@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from analyzer import analyze_pgn
 from engine import EnginePool
+from fastapi.responses import HTMLResponse
 
 app = FastAPI(title="Chess Analysis API", version="0.1.0")
 
